@@ -526,7 +526,7 @@ def send_access_report(request_id: str, extra_emails: list[str] | None = None) -
     report = generate_access_report(request_id)
     _email_access_report(
         recipients,
-        subject_name=req.subject_name or req.subject_email,
+        subject_name=req.subject_email,
         report=report,
     )
     req.status = "sent"

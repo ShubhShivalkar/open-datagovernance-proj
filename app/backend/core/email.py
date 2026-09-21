@@ -1,5 +1,5 @@
 """
-Central email dispatch for Data Governance Project.
+Central email dispatch for Data Guardian.
 
 All outbound email goes through this module so that the email server is
 configured in exactly one place (core/settings.py → EMAIL_* env vars).
@@ -41,15 +41,15 @@ def send_db_credentials(
     """Email generated database credentials to a new IAM user."""
     body = (
         f"Hello {name or username},\n\n"
-        "A database account has been created for you in Data Governance Project.\n\n"
+        "A database account has been created for you in Data Guardian.\n\n"
         f"  Username : {username}\n"
         f"  Password : {password}\n"
         f"  Access   : {privilege_level.replace('_', ' ').title()}\n\n"
         "Please change your password after your first login.\n\n"
-        "— Data Governance Project"
+        "— Data Guardian"
     )
     return _send(
-        subject="Your Data Governance Project database credentials",
+        subject="Your Data Guardian database credentials",
         body=body,
         recipient_list=[recipient],
     )
@@ -85,10 +85,10 @@ def send_access_report(
         "",
         report.get("notes", ""),
         "",
-        "— Data Governance Project",
+        "— Data Guardian",
     ]
     return _send(
-        subject="Your Data Access Report — Data Governance Project",
+        subject="Your Data Access Report — Data Guardian",
         body="\n".join(lines),
         recipient_list=recipient_list,
     )

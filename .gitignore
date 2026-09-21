@@ -2,8 +2,6 @@ demo_data
 node_modules
 node_modules/*
 learnings/*
-start.sh
-stop.sh
 
 # User-uploaded files — never commit real or test uploads
 media/
