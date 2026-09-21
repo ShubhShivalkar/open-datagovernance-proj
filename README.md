@@ -388,10 +388,10 @@ Documenting these explicitly because they shape what a safe deployment looks lik
 ## Project Structure
 
 ```
-data_guardian/
+data_governance_project/
 ├── README.md
 ├── start.sh / stop.sh              # macOS-only local dev convenience scripts (AppleScript)
-└── Data Guardian/
+└── app/
     ├── docker-compose.yml          # dev-mode compose (runserver + vite dev server) — NOT for production
     ├── backend/                    # Django REST Framework API
     │   ├── core/                   # Settings, root URLs, WSGI, Ollama auto-start
@@ -455,13 +455,13 @@ Copy the output — you will paste it into `.env` in the next step.
 
 ```bash
 git clone <repo-url>
-cd data_guardian
+cd data_governance_project
 ```
 
 ### 2. Backend — environment variables
 
 ```bash
-cd "Data Guardian/backend"
+cd "app/backend"
 cp .env.example .env
 ```
 
@@ -521,7 +521,7 @@ AI_MODEL=gpt-4o
 ### 3. Backend — install and initialise
 
 ```bash
-# from Data Guardian/backend/
+# from app/backend/
 
 # Create and activate virtual environment
 python -m venv ../../.venv
@@ -565,7 +565,7 @@ curl http://localhost:11434/api/tags
 Open a second terminal:
 
 ```bash
-cd "Data Guardian/frontend"
+cd "app/frontend"
 npm install
 npm run dev
 ```
@@ -580,10 +580,10 @@ Frontend is available at `http://localhost:5173`. The Vite dev server automatica
 
 ## Docker (Local / Trial Use)
 
-`Data Guardian/docker-compose.yml` defines both services — **note this file lives inside `Data Guardian/`, not the repo root.**
+`app/docker-compose.yml` defines both services — **note this file lives inside `app/`, not the repo root.**
 
 ```bash
-cd "Data Guardian"
+cd app
 
 # Build and start everything
 docker-compose up --build
@@ -629,7 +629,7 @@ Node from Ubuntu's default repo may be older than v20 — install via [NodeSourc
 ```bash
 sudo mkdir -p /opt/dgp && sudo chown $USER:$USER /opt/dgp
 git clone <repo-url> /opt/dgp
-cd /opt/dgp/"Data Guardian"/backend
+cd /opt/dgp/app/backend
 
 python3.12 -m venv /opt/dgp/.venv
 source /opt/dgp/.venv/bin/activate
@@ -686,8 +686,8 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/opt/dgp/Data Guardian/backend
-EnvironmentFile=/opt/dgp/Data Guardian/backend/.env
+WorkingDirectory=/opt/dgp/app/backend
+EnvironmentFile=/opt/dgp/app/backend/.env
 ExecStart=/opt/dgp/.venv/bin/gunicorn core.wsgi:application \
   --bind 127.0.0.1:8001 \
   --workers 3 \
@@ -709,7 +709,7 @@ sudo systemctl status dgp-backend
 ### 5. Build the frontend
 
 ```bash
-cd /opt/dgp/"Data Guardian"/frontend
+cd /opt/dgp/app/frontend
 npm install
 npm run build
 ```
@@ -728,7 +728,7 @@ server {
     client_max_body_size 20M;
 
     # React static build
-    root /opt/dgp/Data Guardian/frontend/dist;
+    root /opt/dgp/app/frontend/dist;
     index index.html;
 
     location / {
@@ -753,12 +753,12 @@ server {
 
     # Django-collected static assets (admin/DRF browsable API CSS/JS)
     location /static/ {
-        alias /opt/dgp/Data Guardian/backend/staticfiles/;
+        alias /opt/dgp/app/backend/staticfiles/;
     }
 
     # User-uploaded CSVs etc.
     location /media/ {
-        alias /opt/dgp/Data Guardian/backend/media/;
+        alias /opt/dgp/app/backend/media/;
     }
 }
 ```
@@ -869,23 +869,6 @@ flowchart TB
 ```
 
 *Renders natively on GitHub. `nginx`/`gunicorn` reflect the production topology described in [Deploying to a Production Application Server](#deploying-to-a-production-application-server); the Django apps and their responsibilities are detailed in the table below.*
-
-### Use Case Algorithm Diagrams (draw.io)
-
-An 8-page draw.io flowchart — one page per use case, each an exact diagram of the pseudocode already documented under [Features](#features) — lives at [`docs/diagrams/data_guardian_use_case_algorithms.drawio`](docs/diagrams/data_guardian_use_case_algorithms.drawio). Open it at [app.diagrams.net](https://app.diagrams.net) (File → Open From → Device) or in the draw.io desktop app.
-
-**Interactive diagram:** <!-- PASTE DRAW.IO SHARE LINK HERE -->
-
-| Page | Use case |
-|---|---|
-| 1 | Data Source Management — credential encryption + connection test |
-| 2 | AI-Powered Catalogue Generation |
-| 3 | AI-Inferred Table Relationships |
-| 4 | Data Map — shared relationship-graph builder |
-| 5 | Full Erasure — BFS plan + transactional execution |
-| 6 | Data Access Request (DSAR) — BFS discovery + report |
-| 7 | Data Islands — VIEW creation, refresh, scheduling, deletion |
-| 8 | IAM — DB user provisioning + role sync |
 
 ### Backend — Django + Django REST Framework
 
