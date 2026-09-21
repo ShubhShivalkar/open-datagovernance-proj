@@ -391,7 +391,7 @@ Documenting these explicitly because they shape what a safe deployment looks lik
 data_governance_project/
 ├── README.md
 ├── start.sh / stop.sh              # macOS-only local dev convenience scripts (AppleScript)
-└── Data Governance Project/
+└── app/
     ├── docker-compose.yml          # dev-mode compose (runserver + vite dev server) — NOT for production
     ├── backend/                    # Django REST Framework API
     │   ├── core/                   # Settings, root URLs, WSGI, Ollama auto-start
@@ -461,7 +461,7 @@ cd data_governance_project
 ### 2. Backend — environment variables
 
 ```bash
-cd "Data Governance Project/backend"
+cd "app/backend"
 cp .env.example .env
 ```
 
@@ -521,7 +521,7 @@ AI_MODEL=gpt-4o
 ### 3. Backend — install and initialise
 
 ```bash
-# from Data Governance Project/backend/
+# from app/backend/
 
 # Create and activate virtual environment
 python -m venv ../../.venv
@@ -565,7 +565,7 @@ curl http://localhost:11434/api/tags
 Open a second terminal:
 
 ```bash
-cd "Data Governance Project/frontend"
+cd "app/frontend"
 npm install
 npm run dev
 ```
@@ -580,10 +580,10 @@ Frontend is available at `http://localhost:5173`. The Vite dev server automatica
 
 ## Docker (Local / Trial Use)
 
-`Data Governance Project/docker-compose.yml` defines both services — **note this file lives inside `Data Governance Project/`, not the repo root.**
+`app/docker-compose.yml` defines both services — **note this file lives inside `app/`, not the repo root.**
 
 ```bash
-cd "Data Governance Project"
+cd app
 
 # Build and start everything
 docker-compose up --build
@@ -629,7 +629,7 @@ Node from Ubuntu's default repo may be older than v20 — install via [NodeSourc
 ```bash
 sudo mkdir -p /opt/dgp && sudo chown $USER:$USER /opt/dgp
 git clone <repo-url> /opt/dgp
-cd /opt/dgp/"Data Governance Project"/backend
+cd /opt/dgp/app/backend
 
 python3.12 -m venv /opt/dgp/.venv
 source /opt/dgp/.venv/bin/activate
@@ -686,8 +686,8 @@ After=network.target
 [Service]
 User=www-data
 Group=www-data
-WorkingDirectory=/opt/dgp/Data Governance Project/backend
-EnvironmentFile=/opt/dgp/Data Governance Project/backend/.env
+WorkingDirectory=/opt/dgp/app/backend
+EnvironmentFile=/opt/dgp/app/backend/.env
 ExecStart=/opt/dgp/.venv/bin/gunicorn core.wsgi:application \
   --bind 127.0.0.1:8001 \
   --workers 3 \
@@ -709,7 +709,7 @@ sudo systemctl status dgp-backend
 ### 5. Build the frontend
 
 ```bash
-cd /opt/dgp/"Data Governance Project"/frontend
+cd /opt/dgp/app/frontend
 npm install
 npm run build
 ```
@@ -728,7 +728,7 @@ server {
     client_max_body_size 20M;
 
     # React static build
-    root /opt/dgp/Data Governance Project/frontend/dist;
+    root /opt/dgp/app/frontend/dist;
     index index.html;
 
     location / {
@@ -753,12 +753,12 @@ server {
 
     # Django-collected static assets (admin/DRF browsable API CSS/JS)
     location /static/ {
-        alias /opt/dgp/Data Governance Project/backend/staticfiles/;
+        alias /opt/dgp/app/backend/staticfiles/;
     }
 
     # User-uploaded CSVs etc.
     location /media/ {
-        alias /opt/dgp/Data Governance Project/backend/media/;
+        alias /opt/dgp/app/backend/media/;
     }
 }
 ```
