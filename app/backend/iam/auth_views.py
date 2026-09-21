@@ -57,8 +57,6 @@ class MeView(APIView):
 
 
 class AppUserListCreateView(APIView):
-    permission_classes = [AllowAny]
-
     def get(self, request):
         users = User.objects.prefetch_related("db_users__datasource").order_by("-date_joined")
         return Response(AppUserSerializer(users, many=True).data)
@@ -85,8 +83,6 @@ class AppUserListCreateView(APIView):
 
 
 class AppUserDetailView(APIView):
-    permission_classes = [AllowAny]
-
     def _get_user(self, pk):
         try:
             return User.objects.prefetch_related("db_users__datasource").get(pk=pk)

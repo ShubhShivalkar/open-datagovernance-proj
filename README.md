@@ -28,7 +28,7 @@ An enterprise data governance platform that connects to your databases, auto-gen
 
 | Feature | Status |
 |---------|--------|
-| Data source management (PostgreSQL, MySQL, BigQuery, SQLite) | ✅ Live |
+| Data source management (PostgreSQL, MySQL) | ✅ Live |
 | AI-powered catalogue generation (table + column descriptions) | ✅ Live |
 | PII detection and tagging | ✅ Live |
 | AI-inferred table relationships (feeds the Data Map + compliance engine) | ✅ Live |
@@ -47,9 +47,9 @@ An enterprise data governance platform that connects to your databases, auto-gen
 
 ### Data source management
 
-Connect DGP to a PostgreSQL, MySQL, BigQuery, or SQLite database by supplying host, port, database name, and credentials. Every credential field is encrypted at rest with a Fernet symmetric key (`CREDENTIAL_ENCRYPTION_KEY`) before it's written to DGP's own metadata store — so a leak of DGP's database alone does not expose your production database password.
+Connect DGP to a PostgreSQL or MySQL database by supplying host, port, database name, and credentials. (BigQuery and SQLite are not implemented as connectable data sources — only PostgreSQL and MySQL are; see [Pre-Installation Requirements](#pre-installation-requirements).) Every credential field is encrypted at rest with a Fernet symmetric key (`CREDENTIAL_ENCRYPTION_KEY`) before it's written to DGP's own metadata store — so a leak of DGP's database alone does not expose your production database password.
 
-**Example:** Your platform team stands up DGP once, then connects it to three real environments — a read replica of the production Postgres customer DB, a MySQL orders database, and a BigQuery analytics warehouse — each shown as a switchable "environment" in the sidebar, so the same catalogue, compliance, and IAM tooling works across all three without three separate installs.
+**Example:** Your platform team stands up DGP once, then connects it to two real environments — a read replica of the production Postgres customer DB and a MySQL orders database — each shown as a switchable "environment" in the sidebar, so the same catalogue, compliance, and IAM tooling works across both without two separate installs.
 
 **Algorithm:**
 
@@ -239,7 +239,7 @@ A governed way to hand a team a slice of a database without giving them the raw 
 
 Refresh can be `static` (VIEW definitions never change after creation) or `scheduled`, either as a cron expression or a fixed interval (using `croniter` to compute `next_run_at`), with support for `full` or `incremental` refresh (the latter using a designated timestamp column to only pull new rows).
 
-> **Operational caveat:** DGP computes *when* an island is due for refresh but does not run its own scheduler. Something external (an OS cron job, a systemd timer) must periodically call `POST /api/data-islands/run-due/` for scheduled refreshes to actually fire. See the deployment section below.
+> **Operational caveat:** DGP computes *when* an island is due for refresh but does not run its own scheduler. Something external (an OS cron job, a systemd timer) must periodically trigger due refreshes — via `python manage.py run_due_routines` (recommended) or an authenticated `POST /api/data-islands/run-due/`. See the deployment section below.
 
 **Example:** Your marketing analytics team needs to query purchase behavior but should never see raw customer PII. You create a Data Island scoped to `orders` and `order_items` with `pii_policy=hide`, refreshed hourly. DGP creates real views in a `di_marketing_analytics` schema on the production Postgres replica — the analytics team connects their BI tool directly to that schema with their own DB credentials (provisioned via IAM below) and simply never sees a `customers.email` column, because it isn't in the view at all.
 
@@ -355,7 +355,7 @@ Documenting these explicitly because they shape what a safe deployment looks lik
 - **Data Island scheduling needs an external trigger.** DGP calculates `next_run_at` but relies on something outside itself (cron, systemd timer) to call the refresh endpoint on time.
 - **Email delivery must be configured to be useful.** DSAR report dispatch and IAM credential delivery both go through Django's email backend, which defaults to the **console backend** (prints to server logs) until real SMTP settings are supplied — meaning, out of the box, no email actually reaches anyone.
 - **Single tenant per deployment.** There is one Django user model with `is_staff`/`is_superuser` for role distinction; there's no multi-tenant data isolation, so one DGP instance is meant to serve one organization.
-- **Not yet production-hardened out of the box.** As shipped, the repo has no `gunicorn` dependency, no static-file-serving middleware, no production Dockerfile, and no CI/CD — see [Deploying to a Production Application Server](#deploying-to-a-production-application-server) for what you need to add.
+- **Not yet production-hardened out of the box.** As shipped, the repo has no `gunicorn` dependency, no static-file-serving middleware, and no production Dockerfile — see [Deploying to a Production Application Server](#deploying-to-a-production-application-server) for what you need to add.
 
 ---
 
@@ -396,7 +396,7 @@ data_governance_project/
     ├── backend/                    # Django REST Framework API
     │   ├── core/                   # Settings, root URLs, WSGI, Ollama auto-start
     │   ├── datasources/            # DataSource model, Fernet credential encryption
-    │   │   └── connectors/         # PostgreSQL, MySQL, SQLite, BigQuery
+    │   │   └── connectors/         # PostgreSQL, MySQL
     │   ├── catalogue/               # CatalogueRun → TableCatalogue → ColumnCatalogue
     │   ├── ai/                      # LLM provider abstraction
     │   │   └── providers/          # OllamaProvider, AnthropicProvider, OpenAIProvider
@@ -436,16 +436,21 @@ Before running the application for the first time, complete every item in this c
 | Node.js | 20 | `node --version` |
 | npm | 9+ | `npm --version` |
 | Ollama *(if using local AI)* | Latest | `ollama --version` |
+| **A running PostgreSQL or MySQL server** | Any recent version | *(see below)* |
 
-### Generate the Fernet encryption key
+### You need a real database to connect to
 
-Every datasource credential (host, password, etc.) stored in the app is encrypted with this key. **The app will crash when you try to add a datasource if this is missing.**
+DGP itself stores its own metadata in SQLite (see [Platform Assumptions](#platform-assumptions)) — but that's not what you're governing. **DGP does not ship a sample/bundled database.** To see anything beyond an empty dashboard, you need a PostgreSQL or MySQL server (local or remote) that DGP can connect to as a data source — these are the only two database engines DGP's connectors currently support. If you don't already have one handy, the fastest way to get one locally is:
 
 ```bash
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# PostgreSQL
+docker run -d --name dgp-test-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16
+
+# or MySQL
+docker run -d --name dgp-test-mysql -e MYSQL_ROOT_PASSWORD=mysql -p 3306:3306 mysql:8
 ```
 
-Copy the output — you will paste it into `.env` in the next step.
+Point DGP at whichever one you spin up when you add your first data source (see [step 7](#7-getting-started-in-the-ui) below).
 
 ---
 
@@ -458,12 +463,32 @@ git clone <repo-url>
 cd data_governance_project
 ```
 
-### 2. Backend — environment variables
+### 2. Backend — install dependencies
 
 ```bash
 cd "app/backend"
+
+# Create and activate virtual environment
+python -m venv ../../.venv
+source ../../.venv/bin/activate     # Windows: ..\..\venv\Scripts\activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+### 3. Backend — environment variables
+
+```bash
 cp .env.example .env
 ```
+
+Now that `cryptography` is installed in your virtualenv (previous step), generate the Fernet encryption key:
+
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+> Run this **after** installing dependencies, not before — it only works if `cryptography` is already importable. If you run it too early against your system Python instead of the project's virtualenv, it may appear to work by coincidence (if `cryptography` happens to already be installed system-wide) or fail with `ModuleNotFoundError`.
 
 Open `.env` and fill in the values below.
 
@@ -472,6 +497,15 @@ Open `.env` and fill in the values below.
 | Variable | How to obtain | Effect if missing |
 |---|---|---|
 | `CREDENTIAL_ENCRYPTION_KEY` | Command above | App crashes when adding any datasource |
+
+#### Required if you want a ready-made login
+
+`.env.example` ships with this **commented out** by design — no repo clone gets a known default admin account. Uncomment it if you want `migrate` to create one for you:
+
+| Variable | Default in `.env.example` | Effect if left commented out |
+|---|---|---|
+| `SEED_ADMIN_PASSWORD` | commented out (unset) | `migrate` won't create an `admin` account — run `python manage.py createsuperuser` afterward instead |
+| `SEED_ADMIN_EMAIL` | commented out, defaults to `admin@dataGuardian.local` if `SEED_ADMIN_PASSWORD` is set | Only used if `SEED_ADMIN_PASSWORD` is set |
 
 #### Required for production — insecure defaults exist
 
@@ -492,6 +526,8 @@ AI_PROVIDER=ollama
 AI_BASE_URL=http://localhost:11434/v1
 AI_MODEL=llama3.2
 ```
+
+Already have a different Ollama model pulled (e.g. `mistral`, `qwen2.5`)? Set `AI_MODEL` to that model's name instead — you don't have to pull `llama3.2` specifically, any model you already have installed works.
 
 **Option B: Anthropic**
 
@@ -518,37 +554,23 @@ AI_MODEL=gpt-4o
 | `MEDIA_ROOT` | `backend/media/` | CSV file uploads |
 | `EMAIL_BACKEND` / `EMAIL_HOST*` | Console backend (prints to logs) | Needed for real DSAR/IAM email delivery — see [Platform Assumptions](#platform-assumptions) |
 
-### 3. Backend — install and initialise
+### 4. Backend — migrate and run
 
 ```bash
-# from app/backend/
-
-# Create and activate virtual environment
-python -m venv ../../.venv
-source ../../.venv/bin/activate     # Windows: ..\..\venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Set SEED_ADMIN_PASSWORD in your .env, then run migrations — this seeds an
-# "admin" superuser with that password. Leave it unset to skip seeding.
 python manage.py migrate
-
-# Start the API server
 python manage.py runserver
 ```
 
 API is available at `http://localhost:8000`
 
-> **Default login:** username `admin`, password from `SEED_ADMIN_PASSWORD` (set in `.env`).
-> No `SEED_ADMIN_PASSWORD` means no admin account is auto-created — use `python manage.py createsuperuser` instead.
+> **Login:** username `admin`, password from `SEED_ADMIN_PASSWORD` — only if you set it in step 3. If you left it commented out, run `python manage.py createsuperuser` to create your own login instead.
 
-### 4. Ollama (local AI — default provider)
+### 5. Ollama (local AI — default provider)
 
 Skip this step if you are using Anthropic or OpenAI.
 
 1. Download and install from https://ollama.com/download
-2. Pull the default model:
+2. Pull a model — the default is `llama3.2`, or use whatever model you set `AI_MODEL` to in step 3:
 
 ```bash
 ollama pull llama3.2
@@ -560,7 +582,7 @@ The Django backend auto-starts the Ollama server on boot (looks for it at `/Appl
 curl http://localhost:11434/api/tags
 ```
 
-### 5. Frontend
+### 6. Frontend
 
 Open a second terminal:
 
@@ -576,6 +598,16 @@ Frontend is available at `http://localhost:5173`. The Vite dev server automatica
 
 `./start.sh` (repo root) opens three `Terminal.app` windows via AppleScript running Ollama, the Django dev server, and the Vite dev server. `./stop.sh` kills whatever's listening on ports 8000/5173/11434. Both are macOS-only local dev helpers — they do not work in CI or on a Linux server.
 
+### 7. Getting started in the UI
+
+Logging in is not the end of setup — **the UI shows nothing (empty dashboard, empty catalogue) until at least one data source exists.** After logging in:
+
+1. Go to **Environments** (sidebar) and click **Create New Environment**.
+2. Enter the host/port/database/credentials for the PostgreSQL or MySQL server from [Pre-Installation Requirements](#pre-installation-requirements) (the `docker run` commands above work fine here — host `localhost`/`127.0.0.1`, the port and password you set).
+3. Click **Ping DB** to confirm connectivity, then trigger a catalogue scan.
+
+Only once a data source is connected and scanned will the Catalogue, Data Map, and Dashboard pages have anything to show.
+
 ---
 
 ## Docker (Local / Trial Use)
@@ -583,7 +615,7 @@ Frontend is available at `http://localhost:5173`. The Vite dev server automatica
 `app/docker-compose.yml` defines both services — **note this file lives inside `app/`, not the repo root.**
 
 ```bash
-cd app
+cd "app"
 
 # Build and start everything
 docker-compose up --build
@@ -639,6 +671,9 @@ pip install -r requirements.txt
 pip install gunicorn
 
 cp .env.example .env
+
+# Generate the Fernet encryption key (run after pip install — needs `cryptography` installed):
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 ```
 
 Edit `.env` with **production values** — at minimum:
@@ -650,6 +685,7 @@ ALLOWED_HOSTS=dgp.yourcompany.com
 CSRF_TRUSTED_ORIGINS=https://dgp.yourcompany.com
 CORS_ALLOWED_ORIGINS=https://dgp.yourcompany.com
 CREDENTIAL_ENCRYPTION_KEY=<from the Fernet command above>
+SEED_ADMIN_PASSWORD=<a real password — set this if you want a ready-made admin login>
 
 # Prefer a cloud AI provider in production unless you specifically want to
 # run and maintain Ollama on the same server (see step 8):
@@ -782,16 +818,24 @@ Running Ollama on the application server itself works but competes with gunicorn
 
 ### 9. Data Islands scheduled refresh — external cron
 
-Because DGP only *computes* `next_run_at` and doesn't run its own scheduler, add a cron entry (or systemd timer) that periodically triggers due refreshes:
+Because DGP only *computes* `next_run_at` and doesn't run its own scheduler, add a cron entry (or systemd timer) that periodically triggers due refreshes.
+
+**Recommended: the `run_due_routines` management command.** It runs in-process (no HTTP call, no auth needed) and handles both Data Island refreshes and Query Editor schedules in one pass:
 
 ```bash
-# crontab -e (as a user that can reach the app, or use curl with an authenticated session)
+# crontab -e (as the user that owns the venv/app)
+*/5 * * * * cd /opt/dgp/app/backend && /opt/dgp/.venv/bin/python manage.py run_due_routines >> /var/log/dgp-run-due.log 2>&1
+```
+
+**Alternative: hitting the HTTP endpoint directly.** All `/api/` endpoints require authentication (see [Platform Assumptions](#platform-assumptions)) — an anonymous `curl -X POST .../api/data-islands/run-due/` will now correctly get a 401/403, not run anything. If you need the HTTP path instead of the management command (e.g. calling it from somewhere other than the app server itself), you must supply a valid session cookie for an authenticated service account:
+
+```bash
 */15 * * * * curl -s -X POST https://dgp.yourcompany.com/api/data-islands/run-due/ \
   -H "Cookie: sessionid=<a long-lived service-account session cookie>" \
   -H "X-CSRFToken: <matching CSRF token>" >> /var/log/dgp-run-due.log 2>&1
 ```
 
-Session-cookie-based cron auth is workable for a first pass but brittle (sessions expire); if you operate this long-term, consider adding a dedicated internal API token/service-account authentication path for this one endpoint.
+Session-cookie-based cron auth is brittle (sessions expire); prefer the management command above unless you have a specific reason to go over HTTP.
 
 ### 10. Backups
 
@@ -806,7 +850,7 @@ Session-cookie-based cron auth is workable for a first pass but brittle (session
 - [ ] `npm run build` and nginx serving `dist/` at `/`, proxying `/api/`, `/admin/`, `/static/`, `/media/`
 - [ ] TLS via certbot
 - [ ] Real SMTP configured (`EMAIL_*` vars) — without it, DSAR/IAM emails silently go to server logs, not real inboxes
-- [ ] External cron hitting `POST /api/data-islands/run-due/` if you use scheduled Data Islands
+- [ ] External cron running `python manage.py run_due_routines` if you use scheduled Data Islands or Query Editor schedules
 - [ ] `db.sqlite3` backup job in place
 - [ ] `SEED_ADMIN_PASSWORD` unset (or rotated) so no known admin credential ships to production
 
@@ -855,8 +899,6 @@ flowchart TB
         direction LR
         PG[("PostgreSQL")]
         MySQL[("MySQL")]
-        BQ[("BigQuery")]
-        SQLite[("SQLite")]
     end
 
     User -->|"HTTPS"| Nginx
@@ -981,8 +1023,9 @@ All connectors extend `BaseConnector` and implement:
 | `execute_ddl(statement)` | `None` | Schema/VIEW DDL — used by Data Islands |
 | `create_db_user(...)` / `get_db_users()` | — | Real user provisioning / role sync — used by IAM |
 
-**Supported:** PostgreSQL, MySQL, SQLite, BigQuery
+**Supported:** PostgreSQL, MySQL
 **Disabled (requires C++ build tools):** Snowflake
+**Not wired up:** `google-cloud-bigquery` is installed (see dependency table below) but has no registered connector — adding one means implementing a connector class and registering it in `datasources/connectors/__init__.py`, the same as PostgreSQL/MySQL.
 
 ---
 
@@ -1069,7 +1112,7 @@ Django session authentication with CSRF protection.
 | POST | `/api/data-islands/{id}/refresh/` | Manually refresh one island |
 | GET / POST | `/api/data-islands/{id}/access/` | List or grant access |
 | DELETE | `/api/data-islands/{id}/access/{access_id}/` | Revoke access |
-| POST | `/api/data-islands/run-due/` | Refresh all islands whose schedule is due — call this from an external cron (see [Deployment](#9-data-islands-scheduled-refresh--external-cron)) |
+| POST | `/api/data-islands/run-due/` | Refresh all islands whose schedule is due — requires authentication; prefer `python manage.py run_due_routines` from cron instead (see [Deployment](#9-data-islands-scheduled-refresh--external-cron)) |
 
 ### IAM
 
@@ -1102,7 +1145,7 @@ Django session authentication with CSRF protection.
 | `cryptography` | 42.0.8 | Fernet encryption for stored credentials |
 | `psycopg2-binary` | 2.9.10 | PostgreSQL connector |
 | `PyMySQL` | 1.1.1 | MySQL connector |
-| `google-cloud-bigquery` | 3.25.0 | BigQuery connector |
+| `google-cloud-bigquery` | 3.25.0 | **Unused** — installed but no connector registered for it (see [Database Connectors](#database-connectors)); BigQuery is not a usable data source yet |
 | `anthropic` | 0.30.1 | Anthropic Claude API |
 | `openai` | ≥2.0.0 | OpenAI + Ollama (OpenAI-compatible) |
 | `openpyxl` | ≥3.1.0 | `.xlsx` export for DSAR reports |
@@ -1138,6 +1181,6 @@ Collected in one place for visibility:
 - **DPDPA Section 12(1)–(3) correction/completion/updating rights** — not implemented against live row data (only catalogue metadata is human-editable today).
 - **AI Assistant** and **Query Editor** pages — not implemented.
 - **Data Island scheduled refresh** requires an external cron/systemd timer; there's no in-process scheduler.
-- **No production Dockerfile, gunicorn dependency, static-file middleware, or CI/CD** ship with the repo — see [Deployment](#deploying-to-a-production-application-server) for the manual steps to fill these in.
+- **No production Dockerfile, gunicorn dependency, or static-file middleware** ship with the repo — see [Deployment](#deploying-to-a-production-application-server) for the manual steps to fill these in.
 - **SQLite as DGP's own metadata store** is a concurrency ceiling worth watching under real multi-user load, independent of which databases you're governing.
 - **Email defaults to the console backend** — SMTP must be configured explicitly for DSAR/IAM emails to reach real inboxes.
