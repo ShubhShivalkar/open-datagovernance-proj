@@ -870,23 +870,6 @@ flowchart TB
 
 *Renders natively on GitHub. `nginx`/`gunicorn` reflect the production topology described in [Deploying to a Production Application Server](#deploying-to-a-production-application-server); the Django apps and their responsibilities are detailed in the table below.*
 
-### Use Case Algorithm Diagrams (draw.io)
-
-An 8-page draw.io flowchart — one page per use case, each an exact diagram of the pseudocode already documented under [Features](#features) — lives at [`docs/diagrams/data_governance_project_use_case_algorithms.drawio`](docs/diagrams/data_governance_project_use_case_algorithms.drawio). Open it at [app.diagrams.net](https://app.diagrams.net) (File → Open From → Device) or in the draw.io desktop app.
-
-**Interactive diagram:** <!-- PASTE DRAW.IO SHARE LINK HERE -->
-
-| Page | Use case |
-|---|---|
-| 1 | Data Source Management — credential encryption + connection test |
-| 2 | AI-Powered Catalogue Generation |
-| 3 | AI-Inferred Table Relationships |
-| 4 | Data Map — shared relationship-graph builder |
-| 5 | Full Erasure — BFS plan + transactional execution |
-| 6 | Data Access Request (DSAR) — BFS discovery + report |
-| 7 | Data Islands — VIEW creation, refresh, scheduling, deletion |
-| 8 | IAM — DB user provisioning + role sync |
-
 ### Backend — Django + Django REST Framework
 
 **Metadata store:** SQLite (stores governance metadata — not the external databases themselves)
