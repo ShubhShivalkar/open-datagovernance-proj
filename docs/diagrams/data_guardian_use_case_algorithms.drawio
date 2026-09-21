@@ -1,0 +1,421 @@
+<mxfile host="app.diagrams.net" agent="data-guardian-readme-gen" version="24.0.0">
+  <diagram id="p1" name="1. Data Source Mgmt">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p1-0" />
+      <mxCell id="p1-1" parent="p1-0" />
+      <mxCell id="p1-s1" value="Add / Test Data Source" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p1-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p1-p1" value="Serialize credentials dict → JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-p2" value="Encrypt with Fernet(CREDENTIAL_ENCRYPTION_KEY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="260" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-p3" value="Store ciphertext in
+DataSource._credentials_encrypted" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="370" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-d1" value="Test Connection
+requested?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p1-1"><mxGeometry x="290" y="513" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p1-p4" value="Decrypt credentials
+(Fernet)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="656" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-p5" value="connector = get_connector(db_type, creds)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="766" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-d2" value="Connection
+succeeds?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p1-1"><mxGeometry x="290" y="909" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p1-p6" value="status = 'connected'
+last_tested_at = now" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="270" y="1052" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-p7" value="status = 'error'
+last_error = str(exception)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p1-1"><mxGeometry x="650" y="909" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p1-e1" value="Return (bool, message)
+— never raises" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p1-1"><mxGeometry x="315" y="1173" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p1-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-s1" target="p1-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p1" target="p1-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p2" target="p1-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p3" target="p1-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e4" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-d1" target="p1-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e5" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-d1" target="p1-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p4" target="p1-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p5" target="p1-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e8" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-d2" target="p1-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e9" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-d2" target="p1-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p6" target="p1-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p1-e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p1-1" source="p1-p7" target="p1-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p2" name="2. Catalogue Generation">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p2-0" />
+      <mxCell id="p2-1" parent="p2-0" />
+      <mxCell id="p2-s1" value="POST /datasources/{id}/generate-catalogue/" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p2-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p2-p1" value="Create/reuse CatalogueRun
+(status='running')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p2" value="connector.get_schema()
+information_schema only — no row data" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p2-1"><mxGeometry x="280" y="260" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-d1" value="refresh_mode ==
+'incremental'?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p2-1"><mxGeometry x="290" y="403" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p2-p3" value="schema −= tables already in
+latest completed run" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="650" y="403" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-d2" value="schema
+empty?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p2-1"><mxGeometry x="290" y="546" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p2-p4" value="Mark run 'completed'
+return (nothing new)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p2-1"><mxGeometry x="695" y="546" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p2-p5" value="FOR EACH table in schema:" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p2-1"><mxGeometry x="270" y="689" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p6" value="get_sample_data(table, limit=5)
+(best-effort, [] on error)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p2-1"><mxGeometry x="280" y="799" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p7" value="provider.generate_table_descriptions(...)
+(LLM call)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p2-1"><mxGeometry x="280" y="909" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p8" value="Persist TableCatalogue +
+ColumnCatalogue per column" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="270" y="1019" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p9" value="run.tables_processed += 1
+(UI polls every 3s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="270" y="1129" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-p10" value="Run AI relationship inference
+(see Page 3) — non-fatal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="270" y="1261" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-d3" value="Uncaught
+exception?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p2-1"><mxGeometry x="290" y="1404" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p2-p11" value="status = 'failed'
+error_message = str(exc)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p2-1"><mxGeometry x="650" y="1404" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p2-e1" value="status = 'completed'" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p2-1"><mxGeometry x="315" y="1547" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p2-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-s1" target="p2-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p1" target="p2-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p2" target="p2-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e3" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d1" target="p2-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e4" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d1" target="p2-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p3" target="p2-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e6" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d2" target="p2-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e7" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d2" target="p2-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p5" target="p2-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p6" target="p2-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p7" target="p2-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p8" target="p2-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e12" value="next table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;curved=1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="p2-1" source="p2-p9" target="p2-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e13" value="loop done" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p9" target="p2-p10"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-p10" target="p2-d3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e15" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d3" target="p2-p11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p2-e16" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p2-1" source="p2-d3" target="p2-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p3" name="3. AI Relationship Inference">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p3-0" />
+      <mxCell id="p3-1" parent="p3-0" />
+      <mxCell id="p3-s1" value="After all tables catalogued" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p3-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p3-p1" value="known = {table.name.lower()
+for table in catalogued_tables}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-p2" value="Build per-table text block:
+description + columns w/ [PK]/[FK-skip] flags" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="270" y="260" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-p3" value="Send ONE LLM prompt:
+'infer relationships not covered by FK constraints'" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p3-1"><mxGeometry x="280" y="392" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-p4" value="Parse JSON array response
+(strip ``` fences)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="270" y="524" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-d1" value="Parse
+failed?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p3-1"><mxGeometry x="290" y="667" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p3-e1" value="Return []" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p3-1"><mxGeometry x="695" y="667" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p3-p5" value="Discard suggestions with
+confidence == 'low'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="270" y="810" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-p6" value="FOR EACH remaining suggestion:" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p3-1"><mxGeometry x="270" y="931" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-d2" value="from_table / to_table
+∈ known set?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p3-1"><mxGeometry x="290" y="1052" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p3-p7" value="skip (hallucination guard)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="650" y="1052" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-d3" value="from_column &amp; to_column
+non-empty?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p3-1"><mxGeometry x="290" y="1195" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p3-p8" value="RelationshipRule.get_or_create(
+source='ai', is_auto=true)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p3-1"><mxGeometry x="270" y="1338" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-p9" value="get_or_create ⇒ NEVER overwrites
+an existing manual/prior-AI rule" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p3-1"><mxGeometry x="650" y="1338" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p3-e2" value="Next suggestion / done" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p3-1"><mxGeometry x="315" y="1470" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p3-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-s1" target="p3-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p1" target="p3-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p2" target="p3-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p3" target="p3-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p4" target="p3-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e5" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d1" target="p3-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e6" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d1" target="p3-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p5" target="p3-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p6" target="p3-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e9" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d2" target="p3-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e10" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d2" target="p3-d3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e11" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d3" target="p3-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e12" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-d3" target="p3-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p8" target="p3-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p3-1" source="p3-p8" target="p3-e2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p3-e15" value="next" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="p3-1" source="p3-p7" target="p3-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p4" name="4. Data Map Graph Build">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p4-0" />
+      <mxCell id="p4-1" parent="p4-0" />
+      <mxCell id="p4-s1" value="Render Data Map / start BFS
+(Erasure or DSAR)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p4-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p4-p1" value="child_map = {}
+(parent_table → [(child, fk_col, parent_pk)])" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p4-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-p2" value="FOR EACH active RelationshipRule
+of the datasource (manual or AI):" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p4-1"><mxGeometry x="270" y="282" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-p3" value="child_map[rule.to_table].append(
+(rule.from_table, from_column, to_column))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p4-1"><mxGeometry x="270" y="403" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-p4" value="latest_run = most recent completed
+CatalogueRun for the datasource" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p4-1"><mxGeometry x="270" y="535" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-p5" value="FOR EACH ColumnCatalogue in latest_run
+WHERE is_foreign_key = true:" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p4-1"><mxGeometry x="270" y="667" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-d1" value="Edge already covered
+by a RelationshipRule?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p4-1"><mxGeometry x="290" y="799" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p4-p6" value="child_map[referenced_table].append(
+(table, column, referenced_column))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p4-1"><mxGeometry x="650" y="799" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p4-e1" value="Return child_map
+→ rendered as nodes+edges in UI,
+→ reused verbatim by Erasure/DSAR BFS" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p4-1"><mxGeometry x="315" y="942" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p4-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-s1" target="p4-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p1" target="p4-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p2" target="p4-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p3" target="p4-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p4" target="p4-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p5" target="p4-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e6" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-d1" target="p4-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e7" value="yes (skip)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-d1" target="p4-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p4-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p4-1" source="p4-p6" target="p4-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p5" name="5. Full Erasure">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p5-0" />
+      <mxCell id="p5-1" parent="p5-0" />
+      <mxCell id="p5-s1" value="Step 1: resolve_identifiers(request)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p5-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p5-d1" value="input_type ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p5-1"><mxGeometry x="290" y="172" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p5-p1a" value="'text': split on commas/newlines,
+trim, drop blanks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="-90" y="172" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p1b" value="'csv': parse rows, skip header,
+take column 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="650" y="172" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p1c" value="'table': SELECT DISTINCT column
+FROM table (live DB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="326" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p2" value="resolved = flat list of identifiers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="458" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p3" value="child_map = build_relationship_graph(datasource)
+(Page 4)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="579" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p4" value="queue = [(id_table, id_col, resolved, via=null)]
+visited = {}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="700" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p5" value="BFS: pop (table, col, values, via)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="821" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-d2" value="table ∈
+visited?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p5-1"><mxGeometry x="290" y="953" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p5-p6" value="row_pks = SELECT DISTINCT pk
+WHERE col IN (values)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p5-1"><mxGeometry x="280" y="1096" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-d3" value="row_pks
+empty?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p5-1"><mxGeometry x="290" y="1239" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p5-p7" value="prune — do not enqueue children" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="650" y="1239" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p8" value="append plan_entry {table, pk, row_pks,
+pii_columns, via}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="1382" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p9" value="enqueue children from
+child_map[table]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="1503" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p10" value="persist ErasurePlan (parent-first order)
+status = 'planned'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="1646" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p11" value="DGO types EXACT confirmation phrase
+(validated server-side)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p5-1"><mxGeometry x="280" y="1778" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-d4" value="phrase matches
+exactly?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p5-1"><mxGeometry x="290" y="1921" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p5-p12" value="reject approval" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p5-1"><mxGeometry x="695" y="1921" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p5-p13" value="status = 'approved'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="2064" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p14" value="execute_erasure: ordered = reverse(plan_entries)
+⇒ CHILDREN-FIRST, root last" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="2185" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p15" value="Build DELETE FROM table WHERE pk IN (row_pks)
+for each entry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="2306" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-p16" value="execute_writes_transactionally(statements)
+ONE transaction — all or nothing" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p5-1"><mxGeometry x="280" y="2427" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-d5" value="any statement
+fails?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p5-1"><mxGeometry x="290" y="2570" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p5-p17" value="ROLLBACK everything
+status = 'failed'" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p5-1"><mxGeometry x="695" y="2570" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p5-p18" value="Write immutable ErasureAuditLog
+(approver, tables_affected, rows_deleted)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p5-1"><mxGeometry x="270" y="2713" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p5-e1" value="status = 'completed'" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p5-1"><mxGeometry x="315" y="2834" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p5-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-s1" target="p5-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e1" value="text" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d1" target="p5-p1a"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e2" value="csv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d1" target="p5-p1b"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e3" value="table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d1" target="p5-p1c"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p1a" target="p5-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p1b" target="p5-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p1c" target="p5-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p2" target="p5-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p3" target="p5-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p4" target="p5-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p5" target="p5-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e11" value="yes — continue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="p5-1" source="p5-d2" target="p5-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e12" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d2" target="p5-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p6" target="p5-d3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e14" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d3" target="p5-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e15" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d3" target="p5-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e16" value="continue loop" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.2;" edge="1" parent="p5-1" source="p5-p7" target="p5-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p8" target="p5-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e18" value="loop while queue not empty" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="p5-1" source="p5-p9" target="p5-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e19" value="queue empty → BFS done" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p9" target="p5-p10"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p10" target="p5-p11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p11" target="p5-d4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e22" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d4" target="p5-p12"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e23" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d4" target="p5-p13"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p13" target="p5-p14"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p14" target="p5-p15"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p15" target="p5-p16"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p16" target="p5-d5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e28" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d5" target="p5-p17"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e29" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-d5" target="p5-p18"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p5-e30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p5-1" source="p5-p18" target="p5-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p6" name="6. DSAR">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p6-0" />
+      <mxCell id="p6-1" parent="p6-0" />
+      <mxCell id="p6-s1" value="discover_data_access(request)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p6-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p6-p1" value="identifier_values = [subject_id]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p2" value="child_map = build_relationship_graph(datasource)
+(Page 4)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="271" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p3" value="queue = [(id_table, id_col, [subject_id], via=null)]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="392" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p4" value="BFS: identical traversal to Full Erasure
+(SELECT DISTINCT pk, prune empty, enqueue children)
+READ-ONLY — nothing queued for deletion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="546" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p5" value="Each visited table also records
+business_purpose + data_categories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="700" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p6" value="persist AccessDiscovery(discovery_entries)
+status = 'discovered'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="821" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p7" value="generate_access_report():
+build inventory[] {table, business_purpose,
+record_count, pii_columns, data_categories}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="953" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p8" value="summary = 'personal data stored across
+N tables, M records'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p6-1"><mxGeometry x="270" y="1085" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p9" value="legal_basis = DPDPA 2023 Section 11
+text (hardcoded)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p6-1"><mxGeometry x="270" y="1206" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-d1" value="send or
+export?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p6-1"><mxGeometry x="290" y="1349" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p6-p10" value="send_access_report():
+email to subject_email + extra_emails
+status = 'sent'" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p6-1"><mxGeometry x="-80" y="1492" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-p11" value="export: build 2-sheet .xlsx
+(Summary + Data Inventory)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p6-1"><mxGeometry x="660" y="1492" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p6-e1" value="Report delivered" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p6-1"><mxGeometry x="315" y="1635" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p6-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-s1" target="p6-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p1" target="p6-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p2" target="p6-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p3" target="p6-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p4" target="p6-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p5" target="p6-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p6" target="p6-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p7" target="p6-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p8" target="p6-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p9" target="p6-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e10" value="email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-d1" target="p6-p10"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e11" value="xlsx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-d1" target="p6-p11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p10" target="p6-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p6-e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p6-1" source="p6-p11" target="p6-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p7" name="7. Data Islands">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p7-0" />
+      <mxCell id="p7-1" parent="p7-0" />
+      <mxCell id="p7-s1" value="create_island(name, pii_policy,
+refresh_strategy, table_configs)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p7-1"><mxGeometry x="315" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p7-p1" value="island_slug = slugify(name)[:50]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="270" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p2" value="persist DataIsland(status='draft')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="270" y="260" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-d1" value="refresh_type ==
+'scheduled'?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p7-1"><mxGeometry x="290" y="392" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p7-p3" value="schedule_next_run:
+cron → croniter().get_next()
+frequency → now + timedelta(unit=every)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="650" y="392" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p4" value="ensure_island_schema:
+CREATE SCHEMA/DATABASE IF NOT EXISTS di_{slug}
+(failure only logged — DDL still attempted)" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p7-1"><mxGeometry x="280" y="546" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p5" value="FOR EACH table_config:" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p7-1"><mxGeometry x="270" y="689" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p6" value="view_name = di_{slug}.{table_slug}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="270" y="799" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p7" value="build_table_sql: per column —
+hide→omit / encrypt→MD5(col) / allow→as-is
++ refresh_time_expr + incremental WHERE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="270" y="931" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p8" value="execute_ddl: CREATE OR REPLACE VIEW
+view_name AS sql" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p7-1"><mxGeometry x="280" y="1085" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-d2" value="DDL
+succeeded?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p7-1"><mxGeometry x="290" y="1228" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p7-p9" value="island_table.status = 'error'
+record last_error — CONTINUE next table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="650" y="1228" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p10" value="island_table.status = 'active'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p7-1"><mxGeometry x="270" y="1371" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-p11" value="island.status = 'error' if any table
+failed else 'active'" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p7-1"><mxGeometry x="315" y="1514" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p7-n1" value="run-due (external cron) → refresh_island:
+rebuild SQL with last_refresh_unix,
+re-execute DDL per table, schedule_next_run again" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p7-1"><mxGeometry x="-90" y="799" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-n2" value="delete_island_view:
+DROP SCHEMA di_{slug} CASCADE (one statement)
+metadata row ALWAYS deleted even if DDL fails" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p7-1"><mxGeometry x="-90" y="1085" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p7-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-s1" target="p7-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p1" target="p7-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p2" target="p7-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e3" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-d1" target="p7-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e4" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-d1" target="p7-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p3" target="p7-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p4" target="p7-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p5" target="p7-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p6" target="p7-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p7" target="p7-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p8" target="p7-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e11" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-d2" target="p7-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e12" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-d2" target="p7-p10"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e13" value="next table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="p7-1" source="p7-p9" target="p7-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e14" value="next table" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;dashed=1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="p7-1" source="p7-p10" target="p7-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e15" value="all tables done" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p10" target="p7-p11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p7-e16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p7-1" source="p7-p9" target="p7-p11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="p8" name="8. IAM">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1400" math="0" shadow="0">
+      <root>
+      <mxCell id="p8-0" />
+      <mxCell id="p8-1" parent="p8-0" />
+      <mxCell id="p8-s1" value="create_user_in_db(username, password,
+privilege_level)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p8-1"><mxGeometry x="-45" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p8-p1" value="validate username matches
+^[a-zA-Z0-9_]+$" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="-90" y="150" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p2" value="connector.create_db_user(...):
+REAL DDL — CREATE USER + GRANT
+on the target database" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p8-1"><mxGeometry x="-80" y="282" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p3" value="get_or_create local
+DatabaseUser(username, datasource)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="-90" y="425" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p4" value="link platform_user, if supplied" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="-90" y="535" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-e1" value="email generated password
+via EMAIL_BACKEND" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p8-1"><mxGeometry x="-45" y="645" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p8-s2" value="sync_db_users(datasource)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="p8-1"><mxGeometry x="695" y="40" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p8-p5" value="db_users = connector.get_db_users()
+SELECT pg_roles / mysql.user — READ-ONLY" style="shape=parallelogram;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="p8-1"><mxGeometry x="660" y="150" width="240" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p6" value="FOR EACH entry in db_users:" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=10;align=left;verticalAlign=top;spacing=6;" vertex="1" parent="p8-1"><mxGeometry x="650" y="282" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-d1" value="existing
+DatabaseUser?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p8-1"><mxGeometry x="670" y="414" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p8-d2" value="notes changed or
+status was 'inactive'?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;align=center;" vertex="1" parent="p8-1"><mxGeometry x="670" y="579" width="220" height="80" as="geometry" /></mxCell>
+      <mxCell id="p8-p7" value="update it
+bucket = 'updated'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="650" y="744" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p8" value="bucket = 'unchanged'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="1010" y="579" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-p9" value="create DatabaseUser with
+placeholder email 'user@dsid.db'
+bucket = 'created'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=center;" vertex="1" parent="p8-1"><mxGeometry x="1010" y="414" width="260" height="60" as="geometry" /></mxCell>
+      <mxCell id="p8-e2" value="return {created, updated,
+unchanged, total, users}" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="p8-1"><mxGeometry x="695" y="887" width="170" height="50" as="geometry" /></mxCell>
+      <mxCell id="p8-e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-s1" target="p8-p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p1" target="p8-p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p2" target="p8-p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p3" target="p8-p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p4" target="p8-e1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-s2" target="p8-p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p5" target="p8-p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p6" target="p8-d1"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e8" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-d1" target="p8-p9"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e9" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-d1" target="p8-d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e10" value="yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-d2" target="p8-p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e11" value="no" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-d2" target="p8-p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;" edge="1" parent="p8-1" source="p8-p7" target="p8-e2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e13" value="next" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="p8-1" source="p8-p8" target="p8-e2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      <mxCell id="p8-e14" value="next" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=10;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="p8-1" source="p8-p9" target="p8-e2"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
