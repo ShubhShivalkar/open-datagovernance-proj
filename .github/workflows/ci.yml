@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Data Guardian/backend
+        working-directory: Data Governance Project/backend
     env:
       SECRET_KEY: ci-only-not-a-secret
       DB_PATH: /tmp/ci.sqlite3
@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-          cache-dependency-path: Data Guardian/backend/requirements.txt
+          cache-dependency-path: Data Governance Project/backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt ruff
       - name: Lint (ruff, correctness rules)
@@ -45,13 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Data Guardian/frontend
+        working-directory: Data Governance Project/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: Data Guardian/frontend/package-lock.json
+          cache-dependency-path: Data Governance Project/frontend/package-lock.json
       - run: npm ci --legacy-peer-deps
       - run: npm run build

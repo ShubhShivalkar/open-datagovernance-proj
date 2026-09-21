@@ -317,7 +317,7 @@ islandsApi = {
 ### Command
 
 ```bash
-cd "Data Guardian/backend"
+cd "Data Governance Project/backend"
 source dgp/bin/activate
 python manage.py seed_mysql_demo
 ```

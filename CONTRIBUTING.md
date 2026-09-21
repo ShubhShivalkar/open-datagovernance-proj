@@ -14,14 +14,14 @@ See the README for full instructions. In short:
 
 ```bash
 # Backend (Django)
-cd "Data Guardian/backend"
+cd "Data Governance Project/backend"
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 
 # Frontend (React + Vite)
-cd "Data Guardian/frontend"
+cd "Data Governance Project/frontend"
 npm ci
 npm run dev
 ```
